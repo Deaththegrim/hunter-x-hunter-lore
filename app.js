@@ -8,7 +8,19 @@
       return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c];
     });
   };
-  App.h = function (html) { document.getElementById("main").innerHTML = html; };
+  App.h = function (html) { document.getElementById("main").innerHTML = App.patter(html); };
+  /* Dreamer's line (site.patter) above the title of the home, a list or a tool page; every page draws through App.h, so a
+     redrawn list keeps it. Never on an entry page: the same line on every person would be filler */
+  /* how a scroll moves: smoothly, unless the reader asked for reduced motion */
+  App.motion = function () {
+    try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; } catch (e) { return "auto"; }
+  };
+  App.patter = function (html) {
+    var parts = App.path().split("/"), id = parts.slice(1).join("/");
+    var line = App.data && App.data.site && (App.data.site.patter || {})[parts[0]];
+    if (!line || id) return html;
+    return html.replace(/<h1[\s>]/, function (m) { return '<p class="patter">' + App.esc(line) + "</p>" + m; });
+  };
   App.href = function (kind, id) { return kind + "/" + encodeURIComponent(id) + "/"; };
   /* the site's root path, from <base href> (every page carries one, so a link "people/x/" means the same on every page) */
   App.root = (function () {
@@ -384,7 +396,8 @@
     try { page(parts.slice(1).join("/")); }
     catch (e) { App.h("<h1>Something went wrong</h1><p class='note'>" + App.esc(e.message) + "</p>"); throw e; }
     if (!/^map/.test(key)) window.scrollTo(0, 0);
-    document.title = (document.querySelector("main h1") || {}).textContent + " · " + App.data.site.title;
+    var t = (document.querySelector("main h1") || {}).textContent;   // the home's title is the site's own name: said once
+    document.title = t === App.data.site.title ? t : t + " · " + App.data.site.title;
     onThisPage();
     if (App.reader) App.reader.routed(key, parts.slice(1).join("/"));
     if (routed) document.getElementById("main").focus({preventScroll: true});   // the new page, not the top of the old one
@@ -396,6 +409,7 @@
   var tocWatch = null;
   function onThisPage() {
     if (tocWatch) { tocWatch.disconnect(); tocWatch = null; }
+    if (!App.path()) return;   // the home is a showbill to start from, not a page to read down: the whole width is its own
     var main = document.getElementById("main");
     var heads = [].slice.call(main.querySelectorAll("h2"));
     if (heads.length < 3) return;
@@ -411,7 +425,7 @@
     toc.addEventListener("click", function (e) {
       var b = e.target.closest("[data-sec]"); if (!b) return;
       var h = document.getElementById("sec-" + b.dataset.sec);
-      h.scrollIntoView({behavior: "smooth", block: "start"});
+      h.scrollIntoView({behavior: App.motion(), block: "start"});
       h.setAttribute("tabindex", "-1"); h.focus({preventScroll: true});
     });
     var rail = document.createElement("div");
@@ -444,7 +458,7 @@
   var top = document.createElement("button");
   top.className = "totop"; top.type = "button"; top.textContent = "Top"; top.hidden = true;
   top.setAttribute("aria-label", "Back to the top of the page");
-  top.addEventListener("click", function () { window.scrollTo({top: 0, behavior: "smooth"}); document.getElementById("main").focus({preventScroll: true}); });
+  top.addEventListener("click", function () { window.scrollTo({top: 0, behavior: App.motion()}); document.getElementById("main").focus({preventScroll: true}); });
   document.body.appendChild(top);
   window.addEventListener("scroll", function () { top.hidden = window.scrollY < 900; }, {passive: true});
   var routed = false;

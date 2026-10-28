@@ -108,20 +108,28 @@
     };
     var people = some(uniq(d.npcs.filter(function (n) { return n.img && !A.hidden(n); })), 6);
     var scenic = d.locations.filter(function (l) { return l.img && l.region === d.site.main && l.kind === "complex"; });
-    var hero = some(scenic, 1)[0], places = some(scenic.filter(function (l) { return l !== hero; }), 4);
+    var places = some(scenic, 4);
     var all = districtsAll(), dnames = Object.keys(all).sort();
     var sl = function (n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); };
-    var tools = [["say/", "What to say", A.t("homeSay")],
-                 ["bench/", "Crafting bench", "Pick a recipe and get the lines to type, checked against the world's own scripts."],
-                 ["planner/", "Character planner", "Every creator pick with its unlocks; compare two builds side by side."],
-                 ["map/" + (isles ? isles.id + "/" : ""), "The map", A.t("homeMap")]]
-      .filter(function (t) { return t[0] !== "bench/" || d.craft; });   // the crafting bench, where the world has one
+    // the tools: the site block's tickets (lorebook_site.tickets, the list the pre-rendered home draws too), each with what it does
+    var does = {say: A.t("homeSay"), bench: "Pick a recipe and get the lines to type, checked against the world's own scripts.",
+                planner: "Every creator pick with its unlocks; compare two builds side by side.", map: A.t("homeMap")};
+    var tools = d.site.tickets.map(function (t) { return [t.href, t.name, does[t.href.split("/")[0]] || "", t.stub, t.colour]; });
     var intro = isles ? A.first(isles.info.replace(/^\[[^\]]*\]\s*/, ""), 260) : "";
-    A.h('<section class="banner"' + (hero ? "" : ' data-plain="1"') + ">" + (hero ? A.img(hero.img, "").replace('loading="lazy" ', "") : "") +
-      '<div class="bannertext"><h1>' + esc(d.site.world) + "</h1><p>" + esc(intro) + '</p><div class="bannerlinks">' +
-      tools.map(function (t) { return '<a href="' + t[0] + '">' + esc(t[1]) + "</a>"; }).join("") + "</div>" +
-      (hero ? '<a class="pictured" href="' + A.href("places", hero.id) + '">Pictured: ' + esc(hero.name) + (hero.district ? ", " + esc(hero.district) : "") + "</a>" : "") +
-      "</div></section>" +
+    var notes = d.site.notes;   // the world's balance notes (a PDF beside the site), where it has them
+    // the showbill (Dreamer's house style): the act, his line (App.patter puts it above the title), the site's name with its last
+    // word lit, tickets; on the stage the world's logo card, Dreamer hosting and his bubble
+    A.h('<section class="showbill"><svg class="sigil" aria-hidden="true" focusable="false"><use href="#rose"/></svg>' +
+      '<div class="panel"><span class="marquee" aria-hidden="true"></span>' +
+      '<p class="eye">Act ' + esc(d.site.act.n) + " · " + esc(d.site.act.label) + "</p>" +
+      "<h1>" + esc(d.site.title).replace(/\s(\S+)$/, ' <span class="hot">$1</span>') + '</h1><p class="lede">' + esc(intro) + "</p>" +
+      '<div class="acts">' + tools.map(function (t) {
+        return '<a class="ticket' + (t[4] ? " " + t[4] : "") + '" href="' + t[0] + '">' + esc(t[1]) + " <small>" + esc(t[3]) + "</small></a>";
+      }).join("") + (notes ? '<a class="ticket" href="' + esc(notes.href) + '" rel="noopener">' + esc(notes.label) + " <small>PDF</small></a>" : "") +
+      "</div></div>" +
+      '<div class="stage"><div class="art"><img src="card.jpg" width="1200" height="630" alt="' + esc(d.site.world) + ' logo art"></div>' +
+      '<div class="host"><img src="host.webp" width="360" height="480" alt="Dreamer, the host"></div>' +
+      '<p class="bubble">' + esc(d.site.bubble || "") + "</p></div></section>" +
       '<div class="tiles">' + tiles.map(function (t) { return '<a class="tile" href="' + t[0] + '/"><b>' + t[1] + "</b><span>" + t[2] + "</span></a>"; }).join("") + "</div>" +
       "<h2>Start here</h2><div class='grid wide'>" + tools.map(function (t) {
         return '<a class="card tool" href="' + t[0] + '"><div class="body"><div class="t">' + esc(t[1]) + '</div><div class="x">' + esc(t[2]) + "</div></div></a>";

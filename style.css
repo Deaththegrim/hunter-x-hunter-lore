@@ -1,22 +1,36 @@
-/* A lorebook: dark wiki. Colours and spacing are the ui-design slate palette and scale. */
+/* A lorebook in Dreamer's house style, "The Show" (his pick 2026-10-28; docs/superpowers/specs/2026-10-28-lorebook-dreamer-house-style-design.md):
+   a showbill at night. The colours are lorebook_house.PALETTE (the gate holds this block equal to it): night and hat navy for the
+   ground, his compass gold for marks and the selected, the fire orb's ember and the water orb's spiral blue for what you click.
+   Faces: Anton for titles, Barlow for reading, Caveat Brush for Dreamer's own lines, JetBrains Mono for labels. */
 :root {
   --space-2xs: 2px; --space-xs: 4px; --space-sm: 8px; --space-md: 12px; --space-lg: 16px; --space-xl: 24px;
   --space-2xl: 32px; --space-3xl: 48px;
-  --radius-sm: 4px; --radius-md: 6px; --radius-lg: 10px; --radius-full: 9999px;
-  --color-bg: #0f1419; --color-surface: #161d24; --color-surface-elev: #1f2731; --color-surface-overlay: #2a333e;
-  --color-border-subtle: #2d3744; --color-border-strong: #3f4d5e;
-  --color-text: #e2e8f0; --color-text-muted: #94a3b8; --color-text-faint: #64748b;
-  --color-accent: #3b82f6; --color-accent-hover: #2563eb; --color-accent-soft: #60a5fa; --color-selected-bg: #1d4ed8;
-  --color-danger: #ef4444; --color-success: #34d399; --color-warning: #fbbf24; --color-info: #60a5fa;
-  --color-text-on-accent: #ffffff;
-  --font-ui: Inter, Ubuntu, "Noto Sans", "DejaVu Sans", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", "Source Code Pro", Consolas, monospace;
+  --radius-sm: 2px; --radius-md: 3px; --radius-lg: 4px; --radius-full: 9999px;
+  --color-bg: #100d22; --color-surface: #161433; --color-surface-elev: #1e1c45; --color-surface-overlay: #28265a;
+  --color-border-subtle: #2c2a55; --color-border-strong: #45427a;
+  --color-text: #f4eddc; --color-text-muted: #aeb0d2; --color-text-faint: #8a8cb4;
+  --color-accent: #3fc7ff; --color-accent-hover: #f5cb6e; --color-accent-soft: #3fc7ff; --color-selected-bg: #e9b64a;
+  --color-danger: #ff6b7a; --color-success: #46d37f; --color-warning: #e9b64a; --color-info: #3fc7ff;
+  --color-text-on-accent: #100d22;
+  --night: #100d22; --hat: #1d2457; --gold: #e9b64a; --ember: #ff5a2a; --spiral: #3fc7ff; --paper: #f4eddc; --mute: #aeb0d2;
+  --green: #46d37f; --red: #ff6b7a;
+  --hairline: rgba(244, 237, 220, .14);
+  --font-show: Anton, Impact, "Arial Narrow", sans-serif;
+  --font-ui: Barlow, "Segoe UI", Ubuntu, "DejaVu Sans", system-ui, sans-serif;
+  --font-hand: "Caveat Brush", "Comic Sans MS", cursive;
+  --font-mono: "JetBrains Mono", "DejaVu Sans Mono", Consolas, monospace;
   --side: 232px;
   color-scheme: dark;
 }
+@font-face { font-family: Anton; font-weight: 400; font-display: swap; src: url(fonts/anton-400.woff2) format("woff2"); }
+@font-face { font-family: Barlow; font-weight: 400; font-display: swap; src: url(fonts/barlow-400.woff2) format("woff2"); }
+@font-face { font-family: Barlow; font-weight: 500; font-display: swap; src: url(fonts/barlow-500.woff2) format("woff2"); }
+@font-face { font-family: Barlow; font-weight: 600 700; font-display: swap; src: url(fonts/barlow-600.woff2) format("woff2"); }
+@font-face { font-family: "Caveat Brush"; font-weight: 400; font-display: swap; src: url(fonts/caveat-brush-400.woff2) format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-weight: 400 800; font-display: swap; src: url(fonts/jetbrains-mono.woff2) format("woff2"); }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--color-bg); color: var(--color-text); }
-body { font: 15px/1.6 var(--font-ui); }
+body { font: 16px/1.6 var(--font-ui); }
 a { color: var(--color-accent-soft); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .prose a, .infobox a, .crumbs a, .lede a, .say a, .note a, .pop a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
@@ -32,25 +46,32 @@ img { max-width: 100%; height: auto; }   /* an art picture carries its folder's 
 main:focus, h2[tabindex="-1"]:focus { outline: none; }   /* focus moved there by script, for screen readers: no ring */
 h1, h2, h3 { line-height: 1.2; margin: 0 0 var(--space-md); }
 /* headings a clear step above the 17px prose (NN/g layer-cake scanning; research/lorebook-layout.md) */
-h1 { font-size: 21px; font-weight: 800; letter-spacing: .01em; }
-h2 { font-size: 21px; font-weight: 600; margin-top: var(--space-2xl); padding: 0 0 var(--space-xs) var(--space-md);
-  border-left: 4px solid var(--color-accent); border-bottom: 1px solid var(--color-border-subtle); scroll-margin-top: 96px; }
-h3 { font-size: 17px; margin-top: var(--space-xl); color: var(--color-text); scroll-margin-top: 96px; }
+/* titles on the poster face, level (the lean is the home panel's alone); reading stays on Barlow */
+h1 { font: 400 clamp(30px, 4.2vw, 44px)/1.02 var(--font-show); letter-spacing: .01em; text-transform: uppercase; color: var(--paper);
+  overflow-wrap: break-word; text-wrap: balance; }   /* a word breaks only where it cannot fit whole */
+h2 { font: 400 24px/1.1 var(--font-show); letter-spacing: .02em; text-transform: uppercase; margin-top: var(--space-2xl);
+  padding: var(--space-2xs) 0 var(--space-xs) var(--space-md);
+  border-left: 4px solid var(--gold); border-bottom: 1px solid var(--color-border-subtle); scroll-margin-top: 96px; }
+h3 { font-size: 17px; font-weight: 600; margin-top: var(--space-xl); color: var(--color-text); scroll-margin-top: 96px; }
 p { margin: 0 0 var(--space-md); }
 code, kbd { font-family: var(--font-mono); font-size: 13px; }
 p code, li code { padding: var(--space-2xs) var(--space-xs); border-radius: var(--radius-sm); background: var(--color-surface-elev); }
 
 /* top bar */
 .top { position: sticky; top: 0; z-index: 1100; display: flex; align-items: center; gap: var(--space-lg);
-  padding: var(--space-sm) var(--space-lg); background: var(--color-surface); border-bottom: 1px solid var(--color-border-subtle); }
-.brand { font-weight: 700; font-size: 17px; color: var(--color-text); white-space: nowrap; }
-.brand small { display: block; font-weight: 400; font-size: 11px; color: var(--color-text-muted); letter-spacing: .08em; text-transform: uppercase; }
+  padding: var(--space-sm) var(--space-lg); background: var(--night); border-bottom: 1px solid rgba(233, 182, 74, .35); }
+.brand { display: flex; align-items: center; gap: var(--space-sm); font: 400 21px/1 var(--font-show); letter-spacing: .03em;
+  text-transform: uppercase; color: var(--paper); white-space: nowrap; }
+.brand:hover { text-decoration: none; }
+.brand:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }   /* the shell's symbols (the compass rose) */
+.brand svg { width: 28px; height: 28px; flex: none; color: var(--gold); }
+.brand small { display: block; margin-top: var(--space-2xs); font: 500 11px/1.2 var(--font-mono); color: var(--color-text-muted);
+  letter-spacing: .1em; text-transform: uppercase; }
 .menu-btn { display: none; }
 .search { position: relative; flex: 1; max-width: 560px; }
 .search input { width: 100%; }
-.play { margin-left: auto; white-space: nowrap; padding: var(--space-xs) var(--space-md); border-radius: var(--radius-md);
-  background: var(--color-selected-bg); color: var(--color-text-on-accent); font-weight: 600; }   /* white on it: 6.7:1 (the lighter accent was 3.67) */
-.play:hover { background: var(--color-accent-hover); }
+.play { margin-left: auto; white-space: nowrap; }   /* a ticket (below); night text on gold, 10.2:1 */
 .results { position: absolute; left: 0; right: 0; top: calc(100% + var(--space-xs)); max-height: 70vh; overflow: auto;
   background: var(--color-surface-elev); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md);
   box-shadow: 0 12px 32px rgba(0, 0, 0, .5); z-index: 1400; }
@@ -63,8 +84,8 @@ p code, li code { padding: var(--space-2xs) var(--space-xs); border-radius: var(
 .shell { display: grid; grid-template-columns: var(--side) minmax(0, 1fr); min-height: calc(100vh - 56px); }
 nav.side { position: sticky; top: 56px; align-self: start; height: calc(100vh - 56px); overflow: auto;
   padding: var(--space-lg) var(--space-sm); border-right: 1px solid var(--color-border-subtle); background: var(--color-surface); }
-nav.side .grp { margin: var(--space-md) var(--space-sm) var(--space-xs); color: var(--color-text-muted); font-size: 11px;
-  letter-spacing: .08em; text-transform: uppercase; }
+nav.side .grp { margin: var(--space-md) var(--space-sm) var(--space-xs); color: var(--gold); font: 700 11px/1.4 var(--font-mono);
+  letter-spacing: .14em; text-transform: uppercase; }
 nav.side a { display: flex; justify-content: space-between; padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-sm); color: var(--color-text-muted); }
 nav.side a:hover { background: var(--color-surface-elev); color: var(--color-text); text-decoration: none; }
 nav.side a.on { background: var(--color-selected-bg); color: var(--color-text-on-accent); }
@@ -72,7 +93,8 @@ nav.side a span { color: var(--color-text-muted); font-size: 11px; }
 nav.side a.on span { color: var(--color-text-on-accent); }
 /* one centred reading width on big screens (Vector 2022 caps content at 960-1244px) */
 main { padding: var(--space-xl) var(--space-2xl) var(--space-3xl); min-width: 0; width: 100%; max-width: 1320px; margin-inline: auto; }
-.crumbs { color: var(--color-text-muted); font-size: 13px; margin-bottom: var(--space-sm); }
+.crumbs { color: var(--color-text-muted); font: 500 12px/1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: var(--space-sm); }
 .lede { color: var(--color-text-muted); max-width: 72ch; }
 
 /* controls */
@@ -90,9 +112,10 @@ button.primary:hover { background: var(--color-accent-hover); }
 /* cards */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: var(--space-md); }
 .grid.wide { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-.card { display: block; background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg);
+.card { display: block; background: var(--color-surface); border: 1px solid var(--hairline); border-radius: var(--radius-lg);
   overflow: hidden; color: var(--color-text); }
-.card:hover { border-color: var(--color-border-strong); background: var(--color-surface-elev); text-decoration: none; }
+.card:hover { border-color: var(--gold); background: var(--color-surface-elev); text-decoration: none; transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--gold); }   /* lifted off the page with the house's hard gold shadow */
 .card .pic { aspect-ratio: 1 / 1; background: var(--color-surface-elev); }
 .card .pic.land { aspect-ratio: 16 / 9; }
 .card .pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -102,7 +125,8 @@ button.primary:hover { background: var(--color-accent-hover); }
 .card .x { color: var(--color-text-muted); font-size: 13px; margin-top: var(--space-xs); display: -webkit-box; -webkit-line-clamp: 3;
   -webkit-box-orient: vertical; overflow: hidden; }
 .more { margin: var(--space-xl) auto 0; display: block; }
-.tag { display: inline-block; padding: 0 var(--space-sm); border-radius: var(--radius-full); font-size: 11px; line-height: 20px;
+.tag { display: inline-block; padding: 0 var(--space-sm); border-radius: var(--radius-sm); font: 500 11px/20px var(--font-mono);
+  letter-spacing: .06em; text-transform: uppercase;
   background: var(--color-surface-overlay); color: var(--color-text-muted); margin: 0 var(--space-xs) var(--space-xs) 0; }
 .tag.weak, .tag.strong, .tag.boss { color: var(--color-text); border-left: 3px solid; }
 .tag.weak { border-left-color: var(--color-success); } .tag.strong { border-left-color: var(--color-warning); } .tag.boss { border-left-color: var(--color-danger); }
@@ -140,7 +164,8 @@ h2.cap { text-transform: capitalize; }
 .prose ul { padding-left: var(--space-xl); margin: 0 0 var(--space-md); }
 .prose strong { color: var(--color-text); }
 .infobox { background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); overflow: hidden; }
-.infobox .hd { padding: var(--space-md); font-weight: 700; text-align: center; background: var(--color-surface-elev); }
+.infobox .hd { padding: var(--space-md); font: 400 20px/1.1 var(--font-show); letter-spacing: .03em; text-transform: uppercase;
+  text-align: center; background: var(--hat); border-bottom: 2px solid var(--gold); }
 .infobox img { display: block; width: 100%; }
 .infobox dl { margin: 0; padding: var(--space-sm) var(--space-md) var(--space-md); display: grid; grid-template-columns: 96px 1fr; gap: var(--space-xs) var(--space-md); font-size: 13px; }
 .infobox dt { color: var(--color-text-muted); }
@@ -156,23 +181,36 @@ th, td { text-align: left; padding: var(--space-sm) var(--space-md); border-bott
 .sortby { background: none; border: 0; padding: 0; color: inherit; font: inherit; text-transform: inherit; letter-spacing: inherit; cursor: pointer; }
 .sortby:hover { color: var(--color-text); }
 .sortby:focus-visible { outline: 2px solid var(--color-accent-soft); outline-offset: 2px; }
-th { color: var(--color-text-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+th { color: var(--gold); font: 700 11px/1.4 var(--font-mono); text-transform: uppercase; letter-spacing: .1em; }
 
-/* home */
-/* home banner: one of his place paintings behind the title, a scrim from the left so the text always reads */
-.banner { position: relative; overflow: hidden; border-radius: var(--radius-lg); border: 1px solid var(--color-border-subtle);
-  min-height: 340px; display: flex; align-items: flex-end; background: var(--color-surface); }
-.banner > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.banner::before { content: ""; position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(90deg, rgba(15, 20, 25, .88) 0%, rgba(15, 20, 25, .62) 45%, rgba(15, 20, 25, .08) 100%); }
-.bannertext { position: relative; z-index: 2; padding: var(--space-2xl); max-width: 640px; }
-.bannertext h1 { font-size: 21px; letter-spacing: .04em; text-transform: uppercase; margin-bottom: var(--space-sm); text-shadow: 0 2px 8px rgba(0, 0, 0, .5); }
-.bannertext p { font-size: 17px; line-height: 1.6; color: var(--color-text); text-shadow: 0 1px 4px rgba(0, 0, 0, .6); }
-.bannerlinks { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-lg); }
-.bannerlinks a { padding: var(--space-xs) var(--space-md); border-radius: var(--radius-full); background: rgba(29, 78, 216, .82);
-  color: var(--color-text-on-accent); font-weight: 600; }
-.bannerlinks a:hover { background: var(--color-accent-hover); text-decoration: none; }
-.pictured { display: inline-block; margin-top: var(--space-lg); font-size: 13px; color: var(--color-text-muted); }
+/* home: the showbill. A leaning panel (the act, Dreamer's line, the name with its last word lit over a spiral-blue swoosh, the
+   tickets) beside the stage: the world's logo card tilted in a paper frame, Dreamer's host card over its corner, his bubble */
+.showbill { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: var(--space-2xl); align-items: center; padding: var(--space-2xl) var(--space-2xl) var(--space-3xl);
+  border: 1px solid var(--hairline); border-radius: var(--radius-lg);
+  background: radial-gradient(120% 90% at 85% 10%, rgba(29, 36, 87, .95) 0%, transparent 55%),
+              radial-gradient(80% 70% at 10% 100%, rgba(255, 90, 42, .14) 0%, transparent 60%), var(--night); }
+.showbill .sigil { right: -60px; bottom: -80px; width: 380px; height: 380px; }
+.showbill .panel { position: relative; padding: var(--space-xl) var(--space-xl) var(--space-2xl); transform: skewX(-4deg);
+  background: linear-gradient(160deg, rgba(29, 36, 87, .92), rgba(16, 13, 34, .94)); border: 1px solid rgba(233, 182, 74, .35);
+  box-shadow: 8px 8px 0 rgba(255, 90, 42, .85); }
+.showbill .panel > * { transform: skewX(4deg); }   /* the panel leans, its words stand level */
+.showbill .panel > .marquee { transform: none; }
+.showbill .panel > .patter { margin-top: var(--space-md); transform: skewX(4deg) rotate(-2deg); }
+.showbill h1 { margin: 0; font-size: clamp(40px, 5.4vw, 84px); line-height: .9; }
+.showbill h1 .hot { display: block; position: relative; width: fit-content; color: var(--ember); }
+.showbill h1 .hot::after { content: ""; position: absolute; left: 2%; right: -6%; bottom: -8px; height: 6px; background: var(--spiral);
+  transform: skewX(-24deg) rotate(-1.5deg); }
+.showbill .lede { margin: var(--space-xl) 0 0; max-width: 44ch; color: var(--mute); }
+.acts { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-top: var(--space-lg); }
+.stage { position: relative; }
+.stage .art { transform: rotate(1.5deg); border: 3px solid var(--paper); box-shadow: -8px 12px 0 var(--hat); background: var(--night); }
+.stage .art img { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 630; object-fit: cover; }
+.stage .host { position: absolute; left: -24px; bottom: -40px; width: 30%; max-width: 150px; border: 3px solid var(--gold);
+  transform: rotate(-6deg); box-shadow: 6px 6px 0 var(--ember); background: var(--night); }
+.stage .host img { display: block; width: 100%; height: auto; }
+.stage .bubble { position: absolute; right: 0; top: -24px; max-width: 220px; margin: 0; padding: var(--space-sm) var(--space-md);
+  font: 22px/1.05 var(--font-hand); color: var(--night); background: var(--paper); transform: rotate(3deg); box-shadow: 4px 4px 0 var(--ember); }
 /* district accents: --dc is the district's hue (pages.js dcol) */
 .card.dc { border-top: 3px solid var(--dc); }
 .card.tool .t { color: var(--color-accent-soft); }
@@ -188,10 +226,11 @@ h1.dh { display: inline-block; padding-bottom: var(--space-xs); border-bottom: 3
 .pin.dc { border-color: var(--dc); }
 .pin.dc .lbl { border-left: 3px solid var(--dc); }
 .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-md); margin: var(--space-xl) 0; }
-.tile { display: block; padding: var(--space-lg); background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-lg); color: var(--color-text); }
-.tile:hover { border-color: var(--color-accent); text-decoration: none; }
-.tile b { display: block; font-size: 21px; }
-.tile span { color: var(--color-text-muted); font-size: 13px; }
+.tile { display: block; padding: var(--space-md) var(--space-lg); background: var(--color-surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg); color: var(--color-text); }
+.tile:hover { border-color: var(--gold); text-decoration: none; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--gold); }
+.tile b { display: block; font: 400 32px/1.05 var(--font-show); color: var(--paper); font-variant-numeric: tabular-nums; }
+.tile span { color: var(--gold); font: 700 11px/1.4 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
 .hero { display: block; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--color-border-subtle); max-width: 980px; }
 .hero img { display: block; width: 100%; }
 
@@ -212,10 +251,10 @@ h1.dh { display: inline-block; padding-bottom: var(--space-xs); border-bottom: 3
 /* labels: a translucent chip so the name reads over busy art; only labels that fit without overlapping show (pages.js) */
 .pin .lbl { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); white-space: nowrap; font-size: 13px; font-weight: 600;
   color: var(--color-text); padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-sm);
-  background: rgba(15, 20, 25, .68); backdrop-filter: blur(2px); box-shadow: 0 1px 4px rgba(0, 0, 0, .35); pointer-events: none; }
+  background: rgba(16, 13, 34, .68); backdrop-filter: blur(2px); box-shadow: 0 1px 4px rgba(0, 0, 0, .35); pointer-events: none; }
 .pin.complex .lbl { font-size: 15px; }
 .pin .lbl.left { left: auto; right: 16px; }
-.pin.on .lbl { background: rgba(29, 78, 216, .85); }
+.pin.on .lbl { background: rgba(29, 36, 87, .94); border-left-color: var(--gold); }
 .pop { position: absolute; right: var(--space-md); top: var(--space-md); width: 300px; max-height: calc(100% - 24px); overflow: auto;
   background: var(--color-surface-elev); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); z-index: 5; }
 .pop img { display: block; width: 100%; }
@@ -304,11 +343,49 @@ button.been[aria-pressed="true"]::before { background: var(--color-success); bor
 @media (prefers-reduced-motion: no-preference) { #preview:not([hidden]) { animation: pv-in .12s ease-out; } }
 @keyframes pv-in { from { opacity: 0; transform: translateY(-4px); } }
 
+/* the house pieces (Dreamer's "The Show"): tickets, his lines, the act eyebrow, the compass watermark, the marquee */
+/* a ticket, the house's button: lorebook_house.ticket_css, word for word (the root page draws the same); notches cut in the
+   background so its hard offset shadow and focus ring show whole */
+.ticket, .play { --tk: var(--gold); position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px;
+  font: 400 17px/1 var(--font-show); letter-spacing: .06em; text-transform: uppercase; color: var(--night); border-radius: 0;
+  box-shadow: 4px 4px 0 var(--ember);
+  background: radial-gradient(circle at 0 50%, transparent 6px, var(--tk) 6.5px) left / 51% 100% no-repeat,
+              radial-gradient(circle at 100% 50%, transparent 6px, var(--tk) 6.5px) right / 51% 100% no-repeat; }
+.ticket small { font: 700 10px/1 var(--font-mono); letter-spacing: .12em; border-left: 2px dashed rgba(16, 13, 34, .5); padding-left: 8px; }
+.ticket.blue { --tk: var(--spiral); box-shadow: 4px 4px 0 var(--hat); }
+.ticket.hot { --tk: var(--ember); box-shadow: 4px 4px 0 var(--hat); }
+.ticket:hover, .play:hover { --tk: var(--color-accent-hover); color: var(--night); text-decoration: none; }
+.ticket.blue:hover, .ticket.hot:hover { --tk: var(--paper); }
+.ticket:focus-visible, .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 4px; }
+/* Dreamer's own line, in his hand */
+.patter { margin: 0 0 var(--space-xs); font: 26px/1.1 var(--font-hand); color: var(--gold); transform: rotate(-1.5deg);
+  transform-origin: left center; }
+/* the act line above a title: a mono label with a lit bulb */
+.eye { display: flex; align-items: center; gap: var(--space-sm); font: 700 11px/1 var(--font-mono); letter-spacing: .18em;
+  text-transform: uppercase; color: var(--spiral); }
+.eye::before { content: ""; width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--spiral);
+  box-shadow: 0 0 10px var(--spiral); flex: none; }
+/* the compass rose, faint behind a page */
+.sigil { position: absolute; pointer-events: none; color: var(--gold); opacity: .07; }
+/* the marquee: a dotted bulb border that blinks, for a reader who allows motion */
+.marquee { position: absolute; inset: 8px; border: 2px dotted rgba(233, 182, 74, .55); pointer-events: none;
+  animation: bulbs 2.4s steps(1) infinite; }
+@keyframes bulbs { 50% { border-color: rgba(255, 90, 42, .6); } }
+@media (prefers-reduced-motion: no-preference) {
+  .card, .tile, .ticket, .play { transition: transform .12s ease-out, box-shadow .12s ease-out, background-color .12s; }
+}
+
 @media (max-width: 900px) {
-  .banner { display: block; min-height: 0; }   /* phones: the picture as a strip on top, the text below it */
-  .banner > img { position: static; height: 200px; }
-  .banner::before { display: none; }
-  .bannertext { padding: var(--space-lg); }
+  /* phones: the panel, then the stage below it, everything inside the bill's own edges */
+  .showbill { grid-template-columns: 1fr; padding: var(--space-lg) var(--space-lg) var(--space-3xl); gap: var(--space-2xl); }
+  .showbill .panel { padding: var(--space-lg) var(--space-lg) var(--space-xl); transform: skewX(-2deg); box-shadow: 6px 6px 0 rgba(255, 90, 42, .85); }
+  .showbill .panel > * { transform: skewX(2deg); }   /* half the lean on a phone: the panel's edge and shadow stay inside the bill */
+  .showbill .panel > .marquee { transform: none; }
+  .showbill .panel > .patter { transform: skewX(2deg) rotate(-2deg); }
+  .showbill .sigil { width: 240px; height: 240px; right: -40px; bottom: -40px; }
+  .stage { margin: var(--space-lg) var(--space-sm) 0; }
+  .stage .host { left: 0; bottom: -32px; width: 28%; }
+  .stage .bubble { right: 0; top: -20px; max-width: 64%; font-size: 17px; }
   .shell { grid-template-columns: 1fr; }
   .top { flex-wrap: wrap; gap: var(--space-sm); }
   .search { order: 3; flex-basis: 100%; max-width: none; }
@@ -327,5 +404,14 @@ button.been[aria-pressed="true"]::before { background: var(--color-success); bor
   .infobox img { max-height: 300px; object-fit: cover; object-position: top; }
   .form { grid-template-columns: 1fr; }
   .brand small { display: none; }
+  /* a long name wraps in its own slot, so Menu, the name and Play keep one row */
+  .brand { flex: 1; min-width: 0; font-size: 17px; line-height: 1.05; white-space: normal; }
+  .brand svg { width: 22px; height: 22px; }
   .play .wide { display: none; }
+}
+
+/* last, so it wins over every earlier rule of the same weight (the phone menu's slide is set in the block above) */
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none; }
+  nav.side { transition: none; }   /* the phone menu opens without sliding */
 }

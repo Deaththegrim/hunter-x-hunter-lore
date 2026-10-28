@@ -79,7 +79,7 @@
   }
   /* the entry a text link opens, or null: cards, tiles, the nav, search results, tabs and the preview itself already say enough */
   function entryOf(a) {
-    if (!a || !a.isConnected || a.closest(".card, .tile, #preview, #side, .search, .toc, .tabs, .crumbs, .bannerlinks, .pop, .pin")) return null;
+    if (!a || !a.isConnected || a.closest(".card, .tile, #preview, #side, .search, .toc, .tabs, .crumbs, .acts, .pop, .pin")) return null;
     var u;
     try { u = new URL(a.href, document.baseURI); } catch (e) { return null; }
     if (u.origin !== location.origin || u.search || u.pathname.indexOf(A.root) !== 0) return null;
