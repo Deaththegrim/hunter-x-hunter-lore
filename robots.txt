@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://deaththegrim.github.io/hunter-x-hunter-lore/sitemap.xml
