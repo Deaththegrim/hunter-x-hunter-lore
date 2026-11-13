@@ -89,6 +89,7 @@ nav.side .grp { margin: var(--space-md) var(--space-sm) var(--space-xs); color: 
 nav.side a { display: flex; justify-content: space-between; padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-sm); color: var(--color-text-muted); }
 nav.side a:hover { background: var(--color-surface-elev); color: var(--color-text); text-decoration: none; }
 nav.side a.on { background: var(--color-selected-bg); color: var(--color-text-on-accent); }
+nav.side a.allworlds { color: var(--gold); border-bottom: 1px solid var(--hairline); border-radius: 0; margin-bottom: var(--space-xs); }
 nav.side a span { color: var(--color-text-muted); font-size: 11px; }
 nav.side a.on span { color: var(--color-text-on-accent); }
 /* one centred reading width on big screens (Vector 2022 caps content at 960-1244px) */

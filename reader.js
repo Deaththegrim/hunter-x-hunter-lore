@@ -229,7 +229,8 @@
       close();
       S.veiled = null;
       var r = A.reader.coverFor(key, rest);
-      if (r) veil(r, key === "map");
+      if (r && A.data.site.hardCover) S.veiled = r;   // the stub drew its own note (App.pageFor): "Show this page" opens this record
+      else if (r) veil(r, key === "map");
     }
   };
 })();

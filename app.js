@@ -51,7 +51,7 @@
   App.artOf = function (url) {
     var a = App.art, s = String(url || "");
     if (!a || s.indexOf(a.base) !== 0) return null;
-    var path = s.slice(a.base.length), size = a.folders[path.split("/")[0]] && ((a.sizes || {})[path] || a.folders[path.split("/")[0]]);
+    var path = s.slice(a.base.length).split("?")[0], size = a.folders[path.split("/")[0]] && ((a.sizes || {})[path] || a.folders[path.split("/")[0]]);
     return size && path.indexOf("/") > 0 ? {thumb: a.thumbs + path, w: size[0], h: size[1]} : null;
   };
   /* small: the thumbnail (a card, a list, a preview); a thumbnail that fails falls back to the full picture */
@@ -120,7 +120,8 @@
 
   /* the side nav is built once; a route only moves its current mark, so keyboard focus on a nav link survives */
   function buildNav() {
-    var html = '<a href="./" data-k="">Home</a>', grp = "";
+    // the way back to every world's lorebook (the host's root page, his ask 2026-11-13), above this lorebook's own Home
+    var html = '<a href="' + App.esc(location.origin + "/") + '" class="allworlds">\u2190 All worlds</a><a href="./" data-k="">Home</a>', grp = "";
     App.SECTIONS.forEach(function (s) {
       if (s.k === "bench" && !App.data.craft) return;   // the crafting bench, where the world has one
       if (App.data.site.off.indexOf(s.k) >= 0) return;   // a section the world has none of
@@ -132,7 +133,9 @@
     document.getElementById("side").innerHTML = html;
     document.getElementById("random").addEventListener("click", function (e) {   // any person, place, creature or lore entry
       e.preventDefault();
-      var pool = App.index.filter(function (x) { return /^(people|places|creatures|lore)$/.test(x.kind); });
+      var open = App.index.filter(function (x) { return !App.hidden(App.byId[x.kind + "/" + x.id]); });   // covered entries stay covered
+      var pool = open.filter(function (x) { return /^(people|places|creatures|lore)$/.test(x.kind); });
+      if (!pool.length) pool = open;   // every one of those covered (The Long Thaw): any open entry
       var x = pool[Math.floor(Math.random() * pool.length)];
       App.go(App.href(x.kind, x.id));
     });
@@ -384,15 +387,27 @@
   };
 
   /* ---------- router ---------- */
+  /* the page a route draws: the section's page, a not-found page, or under a hard cover (data.site.hardCover: The Long Thaw's reveal)
+     a covered entry's stub, with no name and no text of it, the same as its pre-rendered page (the gate draws routes through this) */
+  App.pageFor = function (key, rest) {
+    var site = App.data.site;
+    if (site.hardCover && App.reader && App.reader.coverFor(key, rest)) return function () {
+      var w = site.late;
+      App.h('<div class="crumbs"><a href="./">Home</a></div><h1>' + App.esc(w.title) + '</h1><div class="veil" role="note"><p><b>' + App.esc(w.title) + ".</b> " +
+            (key === "map" ? "This map shows" : "This page is about") + " " + App.esc(w.about) + ". " + App.esc(w.rest) + '</p><p><button type="button" class="primary" ' +
+            'data-spoil="page">Show this page</button> <button type="button" data-spoil="show">' + App.esc(w.showAll) + "</button></p></div>");
+    };
+    return (site.off.indexOf(key) < 0 && App.pages[key]) || function () {   // no page there (GitHub serves 404.html for it)
+      App.h('<div class="crumbs"><a href="./">Home</a></div><h1>Not in the lorebook</h1><p class="lede">Nothing is at this address. ' +
+            "Try the search above, or start from the home page.</p>");
+    };
+  };
   function route() {
     var parts = App.path().split("/");
     var key = parts[0] || "";
     nav(key);
     drawer(false);
-    var page = (App.data.site.off.indexOf(key) < 0 && App.pages[key]) || function () {   // no page there (GitHub serves 404.html for it)
-      App.h('<div class="crumbs"><a href="./">Home</a></div><h1>Not in the lorebook</h1><p class="lede">Nothing is at this address. ' +
-            "Try the search above, or start from the home page.</p>");
-    };
+    var page = App.pageFor(key, parts.slice(1).join("/"));
     try { page(parts.slice(1).join("/")); }
     catch (e) { App.h("<h1>Something went wrong</h1><p class='note'>" + App.esc(e.message) + "</p>"); throw e; }
     if (!/^map/.test(key)) window.scrollTo(0, 0);

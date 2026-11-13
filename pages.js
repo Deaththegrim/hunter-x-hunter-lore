@@ -107,7 +107,7 @@
       return out;
     };
     var people = some(uniq(d.npcs.filter(function (n) { return n.img && !A.hidden(n); })), 6);
-    var scenic = d.locations.filter(function (l) { return l.img && l.region === d.site.main && l.kind === "complex"; });
+    var scenic = d.locations.filter(function (l) { return l.img && l.region === d.site.main && l.kind === "complex" && !A.hidden(l); });
     var places = some(scenic, 4);
     var all = districtsAll(), dnames = Object.keys(all).sort();
     var sl = function (n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); };
@@ -115,7 +115,8 @@
     var does = {say: A.t("homeSay"), bench: "Pick a recipe and get the lines to type, checked against the world's own scripts.",
                 planner: "Every creator pick with its unlocks; compare two builds side by side.", map: A.t("homeMap")};
     var tools = d.site.tickets.map(function (t) { return [t.href, t.name, does[t.href.split("/")[0]] || "", t.stub, t.colour]; });
-    var intro = isles ? A.first(isles.info.replace(/^\[[^\]]*\]\s*/, ""), 260) : "";
+    var intro = isles && !A.hidden(isles) ? A.first(isles.info.replace(/^\[[^\]]*\]\s*/, ""), 260)
+      : isles && d.site.late ? d.site.late.rest : "";   // a covered main map (The Long Thaw) keeps its text covered too
     var notes = d.site.notes;   // the world's balance notes (a PDF beside the site), where it has them
     // the showbill (Dreamer's house style): the act, his line (App.patter puts it above the title), the site's name with its last
     // word lit, tickets; on the stage the world's logo card, Dreamer hosting and his bubble
@@ -246,7 +247,10 @@
     var asked = id ? A.data.regions.filter(function (r) { return r.id === id; })[0] : null;
     var regs = A.data.regions.filter(function (r) { return r.map && A.data.locations.some(function (l) { return l.region === r.name; }); });
     if ((asked && !asked.map) || !regs.length) return mapless(asked && !asked.map ? asked : null);
-    var reg = regs.filter(function (r) { return r.id === id; })[0] || regs.filter(function (r) { return r.name === A.data.site.main; })[0] || regs[0];
+    var vis = regs.filter(function (r) { return !A.hidden(r); });
+    var reg = regs.filter(function (r) { return r.id === id; })[0] || vis.filter(function (r) { return r.name === A.data.site.main; })[0] || vis[0];
+    if (!reg)   // every map covered (The Long Thaw): the note alone, no pin, no place name
+      return A.h(crumbs([["Map"]]) + "<h1>Map</h1><p>" + A.spoil.listNote(regs.length, regs.length === 1 ? "map" : "maps") + "</p>");
     var pinId = A.param("pin"), distPick = A.param("district");
     var places = A.data.locations.filter(function (l) { return l.region === reg.name; });
     var dists = {}; places.forEach(function (p) { if (p.district) dists[p.district] = 1; });
@@ -647,7 +651,7 @@
   P.districts = function (id) {
     var all = districtsAll(), names = Object.keys(all).sort();
     var sl = function (n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); };
-    var lore = function (n) { return A.byName("lore", "District: " + n); };
+    var lore = function (n) { var r = A.byName("lore", "District: " + n); return r && !A.hidden(r) ? r : null; };   // covered lore stays covered
     var site = A.data.site, isles = regionOf(site.main);
     // a district's hub lore opens "<District> is a district of <the world>. ": the card shows what follows
     var hubLine = new RegExp("^.*? is a district of " + site.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\. ");
@@ -657,7 +661,7 @@
         'Each one\'s level band covers everything in it.</p><div class="grid wide">' +
         names.map(function (n) {
           var places = all[n].filter(function (l) { return l.region === site.main; });
-          var hub = places.filter(function (l) { return l.img; })[0] || {};
+          var hub = places.filter(function (l) { return l.img && !A.hidden(l); })[0] || {};
           var lv = places.map(function (l) { return l.levels || []; }).reduce(function (a, b) { return a.concat(b); }, []);
           var band = lv.length ? Math.min.apply(null, lv) + "-" + Math.max.apply(null, lv) : "";
           var lr = lore(n);
@@ -669,9 +673,10 @@
     }
     var name = names.filter(function (n) { return sl(n) === id; })[0];
     if (!name) return missing("Districts");
-    var before = all[name].filter(function (l) { return l.region === site.main; });
+    var before = all[name].filter(function (l) { return l.region === site.main && !A.hidden(l); });
+    var unseen = all[name].filter(function (l) { return l.region !== site.lateRegion && A.hidden(l); }).length;   // covered places of the main map and elsewhere
     var after = site.lateRegion ? all[name].filter(function (l) { return l.region === site.lateRegion; }) : [];
-    var others = all[name].filter(function (l) { return l.region !== site.main && l.region !== site.lateRegion; });   // a district over more regions
+    var others = all[name].filter(function (l) { return l.region !== site.main && l.region !== site.lateRegion && !A.hidden(l); });   // a district over more regions
     var shown = all[name].filter(function (l) { return !A.hidden(l); }), lateHidden = after.length && A.hidden(after[0]);
     var here = {}; shown.forEach(function (l) { here[l.name] = 1; });
     var people = uniq(A.data.npcs.filter(function (n) { return here[n.location] && !A.hidden(n); }));
@@ -683,7 +688,7 @@
       '<a href="people/?district=' + encodeURIComponent(name) + '">Everyone here</a></p>' +
       (mine ? '<p class="beenbar"><span>Been to ' + mine[0] + " of " + mine[1] + ' places here</span><meter min="0" max="' + mine[1] + '" value="' + mine[0] +
         '" aria-label="Places of ' + esc(name) + ' you have been to"></meter></p>' : "") +
-      "<h2>" + esc(A.t("placesBefore")) + "</h2><div class='grid'>" + before.map(function (l) { return card("places", l, esc(l.kind) + (levels(l.levels) ? " · lv " + levels(l.levels) : ""), true); }).join("") + "</div>" +
+      "<h2>" + esc(A.t("placesBefore")) + "</h2>" + (unseen ? "<p>" + A.spoil.listNote(unseen, "places") + "</p>" : "") + "<div class='grid'>" + before.map(function (l) { return card("places", l, esc(l.kind) + (levels(l.levels) ? " · lv " + levels(l.levels) : ""), true); }).join("") + "</div>" +
       (lateHidden ? "<h2>" + esc(A.t("placesAfter")) + "</h2><p>" + A.spoil.listNote(after.length, "places") + "</p>" :
         after.length ? "<h2>" + esc(A.t("placesAfter")) + "</h2><div class='grid'>" + after.map(function (l) { return card("places", l, esc(l.kind) + (levels(l.levels) ? " · lv " + levels(l.levels) : ""), true); }).join("") + "</div>" : "") +
       (others.length ? "<h2>" + esc(A.t("placesElsewhere")) + "</h2><div class='grid'>" + others.map(function (l) { return card("places", l, esc(l.region) + (levels(l.levels) ? " · lv " + levels(l.levels) : ""), true); }).join("") + "</div>" : "") +

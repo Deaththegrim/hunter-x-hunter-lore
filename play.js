@@ -310,7 +310,7 @@
       (bands.length ? "<h2>" + n() + ". Where to go as you grow</h2><p>Every district has a level band. Start low and follow the road up:</p>" +
       '<div class="tablewrap"><table><thead><tr><th>District</th><th>Levels</th><th>Its town</th></tr></thead><tbody>' + bands.map(function (b) {
         return '<tr><td><span class="dchips inline"' + (A.dcol(b.d) ? ' style="--dc:' + A.dcol(b.d) + '"' : "") + "><i></i></span>" + U.districtLink(b.d) + "</td><td>" + b.lo + "-" + b.hi + "</td><td>" +
-          (b.hub ? '<a href="' + A.href("places", b.hub.id) + '">' + esc(b.hub.name) + "</a>" : "") + "</td></tr>";
+          (b.hub && !A.hidden(b.hub) ? '<a href="' + A.href("places", b.hub.id) + '">' + esc(b.hub.name) + "</a>" : "") + "</td></tr>";
       }).join("") + "</tbody></table></div>" : "") +
       "<h2>" + n() + ". First quests</h2><p>Quests that stand alone or open a line, at the gentlest places (all of them: <a href=\"quests/\">Quests</a>):</p><ul>" + first.map(function (x) {
         return '<li><a href="' + A.href("quests", x.q.id) + '">' + esc(x.q.name) + "</a> from " + giverLink(x.q) + " at " + link("places", "locations", x.q.place) +
